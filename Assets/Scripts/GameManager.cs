@@ -8,11 +8,17 @@ public class GameManager : MonoBehaviour
 {
     public GameObject talkPanel;
     public TalkManager talkManager;
+    public QuestManager questManager;
     public TextMeshProUGUI talkText;
     public Image portraitImg;
     public GameObject scanObject;
     public bool isAction;
     public int talkIndex;
+
+   void Start()
+    {
+        Debug.Log(questManager.CheckQuest());   
+    }
 
     public void Action(GameObject scanObj)
     {
@@ -27,13 +33,20 @@ public class GameManager : MonoBehaviour
     }
     void Talk(int id, bool isNpc)
     {
-        string talkData = talkManager.GetTalk(id, talkIndex);
+        //set talk data
+        int questTalkIndex = questManager.GetQuestTalkIndex(id);
+        string talkData = talkManager.GetTalk(id+ questTalkIndex , talkIndex);
+
+        //end talk
         if (talkData == null)
         {
             isAction = false;
             talkIndex = 0;
+            Debug.Log( questManager.CheckQuest(id));
             return;
         }
+
+        //continue talk
         if (isNpc)
         {
             talkText.text = talkData.Split(":")[0];
